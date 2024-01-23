@@ -13,7 +13,7 @@ class Vehicle(models.Model):
     dealer_state = models.CharField(max_length=255)
     dealer_zip = models.CharField(max_length=5)
     listing_price = models.CharField(max_length=255)
-    listing_mileage = models.IntegerField()
+    listing_mileage = models.CharField(max_length=50)
     used = models.BooleanField(default=True)
     certified = models.BooleanField(default=False)
     style = models.CharField(max_length=255)
