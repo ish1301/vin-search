@@ -13,3 +13,4 @@ venv
 
 # Local DB
 *.sqlite*
+./data/*
