@@ -12,10 +12,18 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("file", nargs="+", type=str)
 
+    """
+    Handle loading inventory data into relational database
+    """
+
     def handle(self, *args, **options):
         for file_path in options["file"]:
             with open(file_path) as csvfile:
+                # Batch create for faster procesing of data
                 i = 1
+                batch = []
+                batch_size = 10000
+
                 for row in csv.DictReader(csvfile, dialect="piper"):
                     # Sanitize data
                     row["used"] = True if row["used"] == "TRUE" else False
@@ -23,14 +31,19 @@ class Command(BaseCommand):
                     if row["dealer_vdp_last_seen_date"] == "":
                         row["dealer_vdp_last_seen_date"] = None
 
+                    batch.append(Vehicle(**row))
+
                     try:
-                        v, created = Vehicle.objects.get_or_create(**row)
-                        if created:
-                            print(f"{v} is created in model")
-                        else:
-                            print(f"{v} already exists")
+                        if i % batch_size == 0:
+                            Vehicle.objects.bulk_create(batch)
+                            batch = []
+                            print(f"{i} records created")
                     except Exception as e:
-                        print(row)
+                        print(Exception, e)
                         print(f"{i} Failed with validation {e}")
                         exit()
                     i += 1
+
+                if len(batch) > 0:
+                    Vehicle.objects.bulk_create(batch)
+                    print(f"{i} last batch created")
