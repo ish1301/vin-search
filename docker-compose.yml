@@ -24,7 +24,7 @@ services:
       sh -c "pip3 install -r requirements.txt &&
              pip3 install -r requirements-dev.txt &&
              cd app && 
-             python manage.py runserver 0.0.0.0:8000"
+             gunicorn app.wsgi:application --bind 0.0.0.0:8000"
     volumes:
       - .:/usr/src/app
     ports:
