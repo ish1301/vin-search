@@ -30,8 +30,6 @@ docker-compose up -d
 - app: Backend service http://localhost:8888
 - pg_db: Database service
 - db_ui: Database administration http://localhost:8099
-- redis: Cache and Message Queue
-- celery_broker: Job Queue for running workers
 
 ### Django Admin
 
@@ -59,9 +57,14 @@ docker exec -it app bash
 python manage.py test app.tests
 ```
 
-## Monitoring Celery Events
+## Inventory Data Jobs
 
-Navigate to docker image on your DockerDesktop and view logs for container `celery_broker`, In AWS deployment all these logs will go to CloudWatch
+To load inventory data into your vehicle database you can leverage existing script to do so
+
+```shell
+docker exec -it app bash
+python manage.py load_inventory ../data/inventory-listing-2022-08-17.txt
+```
 
 ## Source Code Formatting
 
