@@ -30,20 +30,5 @@ services:
     ports:
       - "8888:8000"
 
-  celery_broker:
-    build: .
-    container_name: celery_broker
-    command: >
-      sh -c "pip3 install -r requirements.txt &&
-             pip3 install -r requirements-dev.txt &&
-             cd app && 
-             celery -A app worker -l INFO"
-    volumes:
-      - .:/usr/src/app
-
-  redis:
-      image: redis:7.0.5-alpine 
-      container_name: redis
-
 volumes:
   postgres_data:
