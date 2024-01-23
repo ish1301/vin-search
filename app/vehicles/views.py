@@ -7,14 +7,12 @@ from vehicles.serializers import VehicleSerializer
 
 
 class VehicleList(APIView):
-    queryset = Vehicle.objects.all()
-
     @extend_schema(
         operation_id="List vehicles",
         responses={200: VehicleSerializer},
     )
-    def list(self, request):
-        queryset = self.get_queryset()
+    def get(self, request):
+        queryset = Vehicle.objects.all()
         serializer = VehicleSerializer(queryset, many=True)
         return Response(serializer.data)
 
