@@ -4,7 +4,7 @@ from vehicles.views import VehicleList, VehicleView
 urlpatterns = [
     path("list/", VehicleList.as_view(), name="vehicle_list"),
     path(
-        "view/<vin>",
+        "view/<str:vin>",
         VehicleView.as_view(),
         name="vehicle_get",
     ),
