@@ -15,15 +15,22 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         for file_path in options["file"]:
             with open(file_path) as csvfile:
+                i = 1
                 for row in csv.DictReader(csvfile, dialect="piper"):
                     # Sanitize data
-                    row["used"] = bool(row["used"])
-                    row["certified"] = bool(row["certified"])
+                    row["used"] = True if row["used"] == "TRUE" else False
+                    row["certified"] = True if row["certified"] == "TRUE" else False
+                    if row["dealer_vdp_last_seen_date"] == "":
+                        row["dealer_vdp_last_seen_date"] = None
 
-                    v, created = Vehicle.objects.get_or_create(**row)
-                    if created:
-                        print(f"{v} is created in model")
-                    else:
-                        print(f"{v} already exists")
-
-                    exit()
+                    try:
+                        v, created = Vehicle.objects.get_or_create(**row)
+                        if created:
+                            print(f"{v} is created in model")
+                        else:
+                            print(f"{v} already exists")
+                    except Exception as e:
+                        print(row)
+                        print(f"{i} Failed with validation {e}")
+                        exit()
+                    i += 1
