@@ -19,7 +19,7 @@ class Vehicle(models.Model):
     style = models.CharField(max_length=255)
     driven_wheels = models.CharField(max_length=255)
     engine = models.CharField(max_length=255)
-    fuel_type = models.CharField(max_length=100)
+    fuel_type = models.CharField(max_length=255)
     exterior_color = models.CharField(max_length=255)
     interior_color = models.CharField(max_length=255)
     seller_website = models.CharField(max_length=255)
