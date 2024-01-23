@@ -20,7 +20,7 @@ class VehicleList(APIView):
 class VehicleView(APIView):
     @extend_schema(
         operation_id="Get vehicle",
-        responses={200: VehicleSerializer, 404: FileNotFoundError},
+        responses={200: VehicleSerializer},
     )
     def get(self, request, vin):
         vehicle = Vehicle.objects.filter(vin=vin).first()
