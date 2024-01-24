@@ -13,5 +13,4 @@ venv
 
 # Local DB
 *.sqlite*
-data/*.txt
-data/*.gz
+data/inventory*
