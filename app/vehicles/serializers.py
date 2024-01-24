@@ -18,3 +18,14 @@ class VehicleSearchSerializer(Serializer):
     make = CharField()
     model = CharField()
     mileage = CharField(required=False)
+
+
+class VehicleSnippitSerializer(ModelSerializer):
+    class Meta:
+        model = Vehicle
+        fields = ["name", "price", "mileage", "location"]
+
+
+class VehicleReportSerializer(Serializer):
+    market_value = CharField()
+    results = VehicleSnippitSerializer(many=True)

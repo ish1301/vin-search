@@ -1,11 +1,15 @@
-from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiExample, OpenApiParameter, extend_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework.generics import ListAPIView
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK, HTTP_404_NOT_FOUND
+from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
 from rest_framework.views import APIView
 from vehicles.models import Vehicle
-from vehicles.serializers import VehicleSearchSerializer, VehicleSerializer
+from vehicles.serializers import (
+    VehicleReportSerializer,
+    VehicleSearchSerializer,
+    VehicleSerializer,
+)
 
 
 class VehicleList(ListAPIView):
@@ -37,11 +41,11 @@ class VehicleView(APIView):
             return Response("Not found", status=HTTP_404_NOT_FOUND)
 
 
-class VehicleSearch(APIView):
+class VehicleSearch(APIView, LimitOffsetPagination):
     @extend_schema(
         operation_id="Search Vehicle",
         request=VehicleSearchSerializer,
-        responses={200: VehicleSerializer},
+        responses={200: VehicleReportSerializer},
     )
     def post(self, request):
         serializer = VehicleSearchSerializer(data=request.data)
@@ -53,10 +57,15 @@ class VehicleSearch(APIView):
             vehicles = (
                 Vehicle.objects.filter(year=year).filter(make=make).filter(model=model)
             )
+            market_value = Vehicle.market_value(vehicles, mileage)
 
-        serializer = VehicleSerializer(vehicles, many=True)
+            serializer = VehicleReportSerializer(
+                {"results": vehicles, "market_value": market_value}, many=True
+            )
 
-        return Response(
-            serializer.data,
-            status=HTTP_200_OK,
-        )
+            return Response(
+                serializer.data,
+                status=HTTP_200_OK,
+            )
+        else:
+            return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
