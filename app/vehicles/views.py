@@ -67,7 +67,7 @@ class VehicleSearch(APIView):
         ],
         responses={200: VehicleSerializer},
     )
-    def post(self, request):
+    def get(self, request):
         vehicle = Vehicle.objects.first()
         serializer = VehicleSerializer(vehicle)
 
