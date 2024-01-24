@@ -23,7 +23,7 @@ class VehicleSearchSerializer(Serializer):
 class VehicleSnippitSerializer(ModelSerializer):
     class Meta:
         model = Vehicle
-        fields = ["name", "price", "mileage", "location"]
+        fields = ["name", "listing_price", "listing_mileage", "location"]
 
 
 class VehicleReportSerializer(Serializer):
