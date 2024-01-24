@@ -32,6 +32,9 @@ class Vehicle(models.Model):
     class Meta:
         indexes = [
             models.Index(fields=["vin"], name="vin_idx"),
+            models.Index(fields=["year"], name="year_idx"),
+            models.Index(fields=["make"], name="make_idx"),
+            models.Index(fields=["model"], name="model_idx"),
         ]
 
     def calc_price(self, year, make, model):

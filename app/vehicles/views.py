@@ -68,13 +68,16 @@ class VehicleSearch(APIView):
         responses={200: VehicleSerializer},
     )
     def get(self, request):
-        vehicle = Vehicle.objects.first()
-        serializer = VehicleSerializer(vehicle)
+        year = request.query_params.get("year")
+        make = request.query_params.get("model")
+        model = request.query_params.get("model")
+        mileage = request.query_params.get("mileage")
+        vehicles = (
+            Vehicle.objects.filter(year=year).filter(make=make).filter(model=model)
+        )
+        serializer = VehicleSerializer(vehicles, many=True)
 
-        if vehicle:
-            return Response(
-                serializer.data,
-                status=HTTP_200_OK,
-            )
-        else:
-            return Response("Not found", status=HTTP_404_NOT_FOUND)
+        return Response(
+            serializer.data,
+            status=HTTP_200_OK,
+        )
