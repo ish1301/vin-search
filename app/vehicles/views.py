@@ -11,6 +11,12 @@ class VehicleList(ListAPIView):
     queryset = Vehicle.objects.all()
     serializer_class = VehicleSerializer
 
+    @extend_schema(
+        operation_id="List vehicles",
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
 
 class VehicleView(APIView):
     @extend_schema(
