@@ -33,3 +33,6 @@ class Vehicle(models.Model):
         indexes = [
             models.Index(fields=["vin"], name="vin_idx"),
         ]
+
+    def calc_price(self, year, make, model):
+        return 13100
