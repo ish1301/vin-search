@@ -29,6 +29,14 @@ class Vehicle(models.Model):
     dealer_vdp_last_seen_date = models.DateField(null=True, blank=True)
     listing_status = models.CharField(max_length=50)
 
+    @property
+    def name(self):
+        return f"{self.year} {self.make} {self.model}"
+
+    @property
+    def location(self):
+        return f"{self.dealer_city} {self.dealer_state}"
+
     class Meta:
         indexes = [
             models.Index(fields=["vin"], name="vin_idx"),
@@ -37,5 +45,9 @@ class Vehicle(models.Model):
             models.Index(fields=["model"], name="model_idx"),
         ]
 
-    def calc_price(self, year, make, model):
-        return 13100
+    def __str__(self):
+        return self.name
+
+    @classmethod
+    def market_value(self, vehicles, mileage):
+        return "$13,100"
