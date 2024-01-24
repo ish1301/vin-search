@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_404_NOT_FOUND
 from rest_framework.views import APIView
 from vehicles.models import Vehicle
-from vehicles.serializers import VehicleSerializer
+from vehicles.serializers import VehicleSearchSerializer, VehicleSerializer
 
 
 class VehicleList(ListAPIView):
@@ -13,7 +13,7 @@ class VehicleList(ListAPIView):
     serializer_class = VehicleSerializer
 
     @extend_schema(
-        operation_id="List vehicles",
+        operation_id="List Vehicles",
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
@@ -21,7 +21,7 @@ class VehicleList(ListAPIView):
 
 class VehicleView(APIView):
     @extend_schema(
-        operation_id="Get vehicle",
+        operation_id="Get Vehicle",
         responses={200: VehicleSerializer},
     )
     def get(self, request, vin):
@@ -39,42 +39,21 @@ class VehicleView(APIView):
 
 class VehicleSearch(APIView):
     @extend_schema(
-        parameters=[
-            OpenApiParameter(
-                name="year",
-                description="Year of Vehicle",
-                required=True,
-                type=int,
-            ),
-            OpenApiParameter(
-                name="make",
-                description="Make of Vehicle",
-                required=True,
-                type=str,
-            ),
-            OpenApiParameter(
-                name="model",
-                description="Model of Vehicle",
-                required=True,
-                type=str,
-            ),
-            OpenApiParameter(
-                name="mileage",
-                description="Mileage of Vehicle",
-                required=False,
-                type=str,
-            ),
-        ],
+        operation_id="Search Vehicle",
+        request=VehicleSearchSerializer,
         responses={200: VehicleSerializer},
     )
-    def get(self, request):
-        year = request.query_params.get("year")
-        make = request.query_params.get("model")
-        model = request.query_params.get("model")
-        mileage = request.query_params.get("mileage")
-        vehicles = (
-            Vehicle.objects.filter(year=year).filter(make=make).filter(model=model)
-        )
+    def post(self, request):
+        serializer = VehicleSearchSerializer(data=request.data)
+        if serializer.is_valid():
+            year = request.data.get("year")
+            make = request.data.get("make")
+            model = request.data.get("model")
+            mileage = request.data.get("mileage", None)
+            vehicles = (
+                Vehicle.objects.filter(year=year).filter(make=make).filter(model=model)
+            )
+
         serializer = VehicleSerializer(vehicles, many=True)
 
         return Response(
