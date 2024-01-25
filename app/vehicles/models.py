@@ -35,7 +35,7 @@ class Vehicle(models.Model):
 
     @property
     def location(self):
-        return f"{self.dealer_city} {self.dealer_state}"
+        return f"{self.dealer_city}, {self.dealer_state}"
 
     class Meta:
         indexes = [
