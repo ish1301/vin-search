@@ -1,3 +1,5 @@
+import statistics
+
 from django.db import models
 
 
@@ -50,4 +52,10 @@ class Vehicle(models.Model):
 
     @classmethod
     def market_value(self, vehicles, mileage):
-        return "$13,100"
+        matching_prices = [
+            int(i.listing_price) for i in vehicles if len(i.listing_price) > 0
+        ]
+        if not matching_prices:
+            return None  # No matching cars found
+        median_price = statistics.median(matching_prices)
+        return median_price
