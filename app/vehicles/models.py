@@ -1,4 +1,5 @@
 import statistics
+from collections import OrderedDict
 
 from django.db import models
 
@@ -50,12 +51,38 @@ class Vehicle(models.Model):
     def __str__(self):
         return self.name
 
+    """
+    Evaluate market value based on close matches to mileage
+    """
+
     @classmethod
     def market_value(self, vehicles, mileage):
-        matching_prices = [
-            int(i.listing_price) for i in vehicles if len(i.listing_price) > 0
-        ]
+        if mileage is None:
+            return None
+
+        # Match mileage margin % from requested value
+        mileage_margin_low = 0.8
+        mileage_margin_top = 1.2
+
+        matching_prices = {
+            int(i.listing_mileage): int(i.listing_price)
+            for i in vehicles
+            if len(i.listing_price) > 0
+            and len(i.listing_mileage) > 0
+            and (
+                int(i.listing_mileage) * mileage_margin_low
+                <= int(mileage)
+                <= int(i.listing_mileage) * mileage_margin_top
+            )
+        }
+
+        matching_prices = OrderedDict(
+            sorted(matching_prices.items(), key=lambda item: item[0])
+        )
+
         if not matching_prices:
             return None  # No matching cars found
-        median_price = statistics.median(matching_prices)
-        return median_price
+        median_price = statistics.mean(matching_prices)
+
+        # Round to nearest hundered
+        return round(int(median_price / 100) * 100)
