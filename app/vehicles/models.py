@@ -69,7 +69,11 @@ class Vehicle(models.Model):
         # Sort the car inventory based on mileage asc order
         car_inventory = sorted(car_inventory, key=lambda item: item[0])
 
+        # Initial price at mileage
         initial_price = sum(i[1] for i in car_inventory[:10]) / len(car_inventory[:10])
+        initial_mileage = sum(i[0] for i in car_inventory[:10]) / len(
+            car_inventory[:10]
+        )
 
         def depreciation_rate(vehicles):
             # Initialize variables to track changes in mileage and price
@@ -91,7 +95,9 @@ class Vehicle(models.Model):
 
         depreciation = depreciation_rate(car_inventory)
 
-        market_price = max(0, initial_price + (mileage * depreciation))
+        market_price = max(
+            0, initial_price + ((mileage - initial_mileage) * depreciation)
+        )
 
         # Round to nearest hundered
         return round(int(market_price / 100) * 100)
