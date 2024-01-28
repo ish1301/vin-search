@@ -1,5 +1,4 @@
 import statistics
-from collections import OrderedDict
 
 from django.db import models
 
@@ -60,29 +59,39 @@ class Vehicle(models.Model):
         if mileage is None:
             return None
 
-        # Match mileage margin % from requested value
-        mileage_margin_low = 0.8
-        mileage_margin_top = 1.2
-
-        matching_prices = {
-            int(i.listing_mileage): int(i.listing_price)
+        # Filter out data with missing price or mileage
+        car_inventory = [
+            (int(i.listing_mileage), int(i.listing_price))
             for i in vehicles
-            if len(i.listing_price) > 0
-            and len(i.listing_mileage) > 0
-            and (
-                int(i.listing_mileage) * mileage_margin_low
-                <= int(mileage)
-                <= int(i.listing_mileage) * mileage_margin_top
-            )
-        }
+            if len(i.listing_price) > 0 and len(i.listing_mileage) > 0
+        ]
 
-        matching_prices = OrderedDict(
-            sorted(matching_prices.items(), key=lambda item: item[0])
-        )
+        # Sort the car inventory based on mileage asc order
+        car_inventory = sorted(car_inventory, key=lambda item: item[0])
 
-        if not matching_prices:
-            return None  # No matching cars found
-        median_price = statistics.mean(matching_prices)
+        initial_price = sum(i[1] for i in car_inventory[:10]) / len(car_inventory[:10])
+
+        def depreciation_rate(vehicles):
+            # Initialize variables to track changes in mileage and price
+            total_mileage_change = 0
+            total_price_change = 0
+
+            # Calculate the total change in mileage and price between consecutive data points
+            for i in range(1, len(vehicles)):
+                mileage_prev, price_prev = vehicles[i - 1]
+                mileage_curr, price_curr = vehicles[i]
+                mileage_change = mileage_curr - mileage_prev
+                price_change = price_curr - price_prev
+                total_mileage_change += mileage_change
+                total_price_change += price_change
+
+            # Calculate the rate of depreciation
+            depreciation_rate = total_price_change / total_mileage_change
+            return depreciation_rate
+
+        depreciation = depreciation_rate(car_inventory)
+
+        market_price = max(0, initial_price + (mileage * depreciation))
 
         # Round to nearest hundered
-        return round(int(median_price / 100) * 100)
+        return round(int(market_price / 100) * 100)

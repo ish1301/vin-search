@@ -53,7 +53,7 @@ class VehicleSearch(APIView, LimitOffsetPagination):
             year = request.data.get("year")
             make = request.data.get("make")
             model = request.data.get("model")
-            mileage = request.data.get("mileage", None)
+            mileage = int(request.data.get("mileage", None))
             vehicles = (
                 Vehicle.objects.filter(year=year)
                 .filter(make=make)
