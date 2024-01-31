@@ -27,13 +27,13 @@ docker-compose up -d
 
 ### Services
 
-- app: Backend service http://localhost:8888
+- app: Backend service http://165.140.238.68:8888/
 - pg_db: Database service
-- db_ui: Database administration http://localhost:8099
+- db_ui: Database administration http://165.140.238.68:8099/
 
 ### Django Admin
 
-URL: [http://localhost:8888/admin](http://localhost:8888/admin/)
+URL: [http://165.140.238.68:8888/admin](http://165.140.238.68:8888/admin/)
 
 ## Database Migrations
 
