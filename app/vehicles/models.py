@@ -56,7 +56,7 @@ class Vehicle(models.Model):
 
     @classmethod
     def market_value(self, vehicles, mileage):
-        if mileage is None:
+        if mileage is None or len(mileage) == 0 or len(vehicles) == 0:
             return None
 
         # Filter out data with missing price or mileage
@@ -96,7 +96,7 @@ class Vehicle(models.Model):
         depreciation = depreciation_rate(car_inventory)
 
         market_price = max(
-            0, initial_price + ((mileage - initial_mileage) * depreciation)
+            0, initial_price + ((int(mileage) - initial_mileage) * depreciation)
         )
 
         # Round to nearest hundered
