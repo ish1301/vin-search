@@ -21,7 +21,7 @@ GitHub Backend Repo: [https://github.com/ish1301/assignment-project](https://git
 
 ```shell
 # Check all values if they needs to be updated
-cp env.example .env
+cp env.default .env
 docker-compose up -d
 ```
 
