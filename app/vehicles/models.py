@@ -39,6 +39,16 @@ class Vehicle(models.Model):
     def location(self):
         return f"{self.dealer_city}, {self.dealer_state}"
 
+    @property
+    def price(self):
+        return f"${int(self.listing_price):,}" if len(self.listing_price) > 0 else "-"
+
+    @property
+    def mileage(self):
+        return (
+            f"{int(self.listing_mileage):,}" if len(self.listing_mileage) > 0 else "-"
+        )
+
     class Meta:
         indexes = [
             models.Index(fields=["vin"], name="vin_idx"),
