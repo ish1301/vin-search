@@ -110,4 +110,4 @@ class Vehicle(models.Model):
         )
 
         # Round to nearest hundered
-        return round(int(market_price / 100) * 100)
+        return f"${round(int(market_price / 100) * 100):,}"
