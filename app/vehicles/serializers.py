@@ -17,7 +17,7 @@ class VehicleSearchSerializer(Serializer):
     year = IntegerField()
     make = CharField()
     model = CharField()
-    mileage = CharField(required=False)
+    mileage = CharField(required=False, allow_null=True, allow_blank=True)
 
 
 class VehicleSnippitSerializer(ModelSerializer):
