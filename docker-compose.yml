@@ -32,5 +32,16 @@ services:
     ports:
       - "8888:8000"
 
+  frontend:
+    image: node:20-bullseye
+    command: >
+      sh -c "cd app && 
+             npm install &&
+             npm run start"
+    volumes:
+      - ../vinaudit-frontend:/app
+    ports:
+      - "8888:8000"
+
 volumes:
   postgres_data:
