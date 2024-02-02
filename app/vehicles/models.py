@@ -100,21 +100,20 @@ class Vehicle(models.Model):
         # Sort the car inventory based on mileage asc order
         car_inventory = sorted(car_inventory, key=lambda item: item[0])
 
+        # Initial price at mileage
+        median_price = statistics.median([i[1] for i in car_inventory])
+        median_mileage = statistics.median([i[0] for i in car_inventory])
+        # print(f"Initial Mileage: {median_mileage}")
+        # print(f"Initial Price: {median_price}")
+
         # If mileage is unknown return median
         if mileage is None or len(mileage) == 0:
-            median_price = statistics.median([i[1] for i in car_inventory])
             return round_by_100(median_price)
-
-        # Initial price at mileage
-        initial_price = sum(i[1] for i in car_inventory[:10]) / len(car_inventory[:10])
-        initial_mileage = sum(i[0] for i in car_inventory[:10]) / len(
-            car_inventory[:10]
-        )
 
         depreciation = depreciation_rate(car_inventory)
 
         market_price = max(
-            0, initial_price + ((int(mileage) - initial_mileage) * depreciation)
+            0, median_price + ((int(mileage) - median_mileage) * depreciation)
         )
 
         return round_by_100(market_price)
