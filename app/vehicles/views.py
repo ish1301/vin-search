@@ -55,7 +55,9 @@ class VehicleSearch(APIView, LimitOffsetPagination):
             model = request.data.get("model")
             mileage = request.data.get("mileage", None)
             vehicles = (
-                Vehicle.objects.filter(year=year)
+                Vehicle.objects.exclude(listing_price__exact="")
+                .exclude(listing_mileage__exact="")
+                .filter(year=year)
                 .filter(make=make)
                 .filter(model=model)[:100]
             )

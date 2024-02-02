@@ -103,14 +103,16 @@ class Vehicle(models.Model):
         # Initial price at mileage
         median_price = statistics.median([i[1] for i in car_inventory])
         median_mileage = statistics.median([i[0] for i in car_inventory])
-        # print(f"Initial Mileage: {median_mileage}")
-        # print(f"Initial Price: {median_price}")
 
         # If mileage is unknown return median
         if mileage is None or len(mileage) == 0:
             return round_by_100(median_price)
 
         depreciation = depreciation_rate(car_inventory)
+
+        print(f"Initial Mileage: {median_mileage}")
+        print(f"Initial Price: {median_price}")
+        print(f"Depreciation: {depreciation}")
 
         market_price = max(
             0, median_price + ((int(mileage) - median_mileage) * depreciation)
