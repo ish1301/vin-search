@@ -67,7 +67,7 @@ class Vehicle(models.Model):
     @classmethod
     def market_value(self, vehicles, mileage):
         if mileage is None or len(mileage) == 0 or len(vehicles) == 0:
-            return None
+            return ""
 
         # Filter out data with missing price or mileage
         car_inventory = [
