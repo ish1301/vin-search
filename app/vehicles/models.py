@@ -71,7 +71,7 @@ class Vehicle(models.Model):
             return ""
 
         def round_by_100(price):
-            return f"${round(int(price / 100) * 100):,}"
+            return f"${round(int(price / 100) * 100):,}" if price > 0 else ""
 
         def depreciation_rate(vehicles):
             # Initialize variables to track changes in mileage and price
