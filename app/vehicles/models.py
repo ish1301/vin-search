@@ -66,24 +66,11 @@ class Vehicle(models.Model):
 
     @classmethod
     def market_value(self, vehicles, mileage):
-        if mileage is None or len(mileage) == 0 or len(vehicles) == 0:
+        if len(vehicles) == 0:
             return ""
 
-        # Filter out data with missing price or mileage
-        car_inventory = [
-            (int(i.listing_mileage), int(i.listing_price))
-            for i in vehicles
-            if len(i.listing_price) > 0 and len(i.listing_mileage) > 0
-        ]
-
-        # Sort the car inventory based on mileage asc order
-        car_inventory = sorted(car_inventory, key=lambda item: item[0])
-
-        # Initial price at mileage
-        initial_price = sum(i[1] for i in car_inventory[:10]) / len(car_inventory[:10])
-        initial_mileage = sum(i[0] for i in car_inventory[:10]) / len(
-            car_inventory[:10]
-        )
+        def round_by_100(price):
+            return f"${round(int(price / 100) * 100):,}"
 
         def depreciation_rate(vehicles):
             # Initialize variables to track changes in mileage and price
@@ -103,11 +90,31 @@ class Vehicle(models.Model):
             depreciation_rate = total_price_change / total_mileage_change
             return depreciation_rate
 
+        # Filter out data with missing price or mileage
+        car_inventory = [
+            (int(i.listing_mileage), int(i.listing_price))
+            for i in vehicles
+            if len(i.listing_price) > 0 and len(i.listing_mileage) > 0
+        ]
+
+        # Sort the car inventory based on mileage asc order
+        car_inventory = sorted(car_inventory, key=lambda item: item[0])
+
+        # If mileage is unknown return median
+        if mileage is None or len(mileage) == 0:
+            median_price = statistics.median([i[1] for i in car_inventory])
+            return round_by_100(median_price)
+
+        # Initial price at mileage
+        initial_price = sum(i[1] for i in car_inventory[:10]) / len(car_inventory[:10])
+        initial_mileage = sum(i[0] for i in car_inventory[:10]) / len(
+            car_inventory[:10]
+        )
+
         depreciation = depreciation_rate(car_inventory)
 
         market_price = max(
             0, initial_price + ((int(mileage) - initial_mileage) * depreciation)
         )
 
-        # Round to nearest hundered
-        return f"${round(int(market_price / 100) * 100):,}"
+        return round_by_100(market_price)
