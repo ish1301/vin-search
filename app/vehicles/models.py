@@ -122,5 +122,5 @@ class Vehicle(models.Model):
         return round_by_100(market_price)
 
 
-class QuoteAdmin(admin.ModelAdmin):
+class VehicleAdmin(admin.ModelAdmin):
     pass
