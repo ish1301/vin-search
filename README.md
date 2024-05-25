@@ -17,7 +17,7 @@ wheel. It’s free and open source.
 This is the initial setup for Image Analysis App .env.example to .env for the application to run. Navigate to the
 project folder and deploy the stack. This command will launch 5 services.
 
-GitHub Backend Repo: [https://github.com/ish1301/assignment-project](https://github.com/ish1301/assignment-project)
+GitHub Backend Repo: [https://github.com/ish1301/vin-frontend](https://github.com/ish1301/vin-frontend)
 
 ```shell
 # Check all values if they needs to be updated
@@ -27,13 +27,13 @@ docker-compose up -d
 
 ### Services
 
-- app: Backend service http://165.140.238.68:8888/
+- app: Backend service http://127.0.0.1:8888/
 - pg_db: Database service
-- db_ui: Database administration http://165.140.238.68:8099/
+- db_ui: Database administration http://127.0.0.1:8099/
 
 ### Django Admin
 
-URL: [http://165.140.238.68:8888/admin](http://165.140.238.68:8888/admin/)
+URL: [http://127.0.0.1:8888/admin](http://127.0.0.1:8888/admin/)
 
 ## Database Migrations
 
