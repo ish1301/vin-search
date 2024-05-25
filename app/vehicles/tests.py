@@ -102,6 +102,21 @@ class VehicleSearchTests(APITestCase):
         self.assertIn('market_value', response.data)
         self.assertEqual(len(response.data['results']), 2)
 
+    def test_search_vehicle_with_mileage(self):
+        url = reverse('vehicle_search')
+        data = {
+            "year": 2020,
+            "make": "Honda",
+            "model": "Accord",
+            "mileage": "25000",
+
+        }
+        response = self.client.post(url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['market_value'], "$10,000")
+        self.assertEqual(len(response.data['results']), 2)
+
     def test_search_vehicle_invalid(self):
         url = reverse('vehicle_search')
         data = {
