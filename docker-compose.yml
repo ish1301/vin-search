@@ -16,7 +16,7 @@ services:
       - "8099:8080"
 
   # IN PRODUCTION use gunicorn
-  # gunicorn app.wsgi:application --bind 0.0.0.0:8000
+  # gunicorn core.wsgi:application --bind 0.0.0.0:8000
   app:
     build: .
     container_name: app
