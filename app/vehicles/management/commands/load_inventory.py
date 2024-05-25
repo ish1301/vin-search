@@ -1,6 +1,6 @@
 import csv
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from vehicles.models import Vehicle
 
 csv.register_dialect("piper", delimiter="|", quoting=csv.QUOTE_NONE)
