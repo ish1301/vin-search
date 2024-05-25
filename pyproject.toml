@@ -1,6 +1,5 @@
 [tool.isort]
 line_length = 120
-multi_line_output = 3
 use_parentheses = true
 skip = "migrations,venv"
 profile = "black"
@@ -10,10 +9,11 @@ line-length = 120
 exclude = '''
 /(
   | migrations
+  | venv
 )/
 '''
 
 [tool.flake8]
 max-line-length = 120
-ignore = ["F811", "F401", "W503", "N805", "E203"]
-exclude = [".git", "__pycache__", "venv", "./app/vehicles/migrations"]
+# ignore = ["F811", "F401", "W503", "N805", "E203"]
+exclude = [".git", "__pycache__", "venv", "migrations"]
