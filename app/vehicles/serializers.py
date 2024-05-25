@@ -1,9 +1,4 @@
-from rest_framework.serializers import (
-    CharField,
-    IntegerField,
-    ModelSerializer,
-    Serializer,
-)
+from rest_framework.serializers import CharField, IntegerField, ModelSerializer, Serializer
 from vehicles.models import Vehicle
 
 
