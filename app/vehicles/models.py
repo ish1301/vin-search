@@ -46,9 +46,7 @@ class Vehicle(models.Model):
 
     @property
     def mileage(self):
-        return (
-            f"{int(self.listing_mileage):,}" if len(self.listing_mileage) > 0 else "-"
-        )
+        return f"{int(self.listing_mileage):,}" if len(self.listing_mileage) > 0 else "-"
 
     class Meta:
         indexes = [
@@ -115,9 +113,7 @@ class Vehicle(models.Model):
         print(f"Initial Price: {median_price}")
         print(f"Depreciation: {depreciation}")
 
-        market_price = max(
-            0, median_price + ((int(mileage) - median_mileage) * depreciation)
-        )
+        market_price = max(0, median_price + ((int(mileage) - median_mileage) * depreciation))
 
         return round_by_100(market_price)
 

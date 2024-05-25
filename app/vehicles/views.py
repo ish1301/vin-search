@@ -64,9 +64,7 @@ class VehicleSearch(APIView, LimitOffsetPagination):
 
             market_value = Vehicle.market_value(vehicles, mileage)
 
-            serializer = VehicleReportSerializer(
-                {"results": vehicles, "market_value": market_value}
-            )
+            serializer = VehicleReportSerializer({"results": vehicles, "market_value": market_value})
 
             return Response(
                 serializer.data,
