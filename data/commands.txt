@@ -1,1 +1,7 @@
+Dump
+
 docker exec pg_db pg_dump -U appuser -Z 5 appdb > inventory_dump.tz
+
+Import
+
+docker exec pg_db psql --username appuser appdb < data/inventory-listing-2022-08-17.txt
