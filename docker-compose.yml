@@ -21,12 +21,12 @@ services:
     build: .
     container_name: app
     command: >
-      sh -c "pip3 install -r requirements.txt &&
-             pip3 install -r requirements-dev.txt &&
-             cd app && 
+      sh -c "pip3 install -r ../requirements.txt &&
+             pip3 install -r ../requirements-dev.txt &&
              python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/usr/src/app
+    working_dir: /usr/src/app/app
     ports:
       - "8888:8000"
 

@@ -72,6 +72,5 @@ Source code formatting is part of GitHub workflow approval, but you can manually
 
 ```shell
 docker exec -it app bash
-black api
-flake8 api
+black .
 ```
