@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [develop, main]
+
+env:
+  DB_NAME: postgres
+  DB_USER: postgres
+  DB_PASSWORD: postgres
+  DB_HOST: localhost
+  SECRET_KEY: fake-test-key-hpxqpvmsgfucirjzm3gthpxqpvmsgfucirjt
+  RESET_PASSWORD_URL: http://localhost:8000/reset-password
+  FRONTEND_URL: http://localhost:8000/
+  DESIGN_TEAM_LIST_EMAIL: ikumar@contractor.5amsolutions.com
+  DISTRIBUTION_LIST_EMAIL: ikumar@contractor.5amsolutions.com
+  MARKETPLACE_ADMINS_EMAIL: ikumar@contractor.5amsolutions.com
+  NO_REPLY_EMAIL_SENDER: assay-marketplace@invitae.com
+
+jobs:
+  ci:
+    strategy:
+      fail-fast: true
+      matrix:
+        python-version: ["3.10"]
+        os: [ubuntu-20.04]
+    runs-on: ${{ matrix.os }}
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip" # caching pip dependencies
+
+      - name: Create and start virtual environment
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt && pip install -r requirements-dev.txt
+
+      - name: PyBlack formatting
+        run: python -m black --check ./; echo $?
+
+      - name: Flake8 formatting
+        run: python -m flake8 ./; echo $?
+
+      - name: iSort formatting
+        run: python -m isort --check-only ./; echo $?
+
+      - name: Tests
+        run: python manage.py test
