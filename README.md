@@ -49,7 +49,7 @@ python manage.py migrate
 
 ## Unit Testing
 
-Unit testing is integrated as part of [PR merge workflow](https://github.com/ish1301/edlight-project/actions) and
+Unit testing is integrated as part of [PR merge workflow](#) and
 executed before merges are approved at GitHub. Although unit tests can be executed locally as well.
 
 ```shell
