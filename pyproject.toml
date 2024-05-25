@@ -1,7 +1,14 @@
+[tool.isort]
+skip = "migrations,venv"
+profile = "black"
+
 [tool.black]
 exclude = '''
 /(
   | migrations
 )/
-
 '''
+
+[tool.flake8]
+max-line-length = 120
+exclude = [".git", "__pycache__", "venv", "migrations"]
