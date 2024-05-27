@@ -137,4 +137,4 @@ class Vehicle(models.Model):
 
 
 class VehicleAdmin(admin.ModelAdmin):
-    pass
+    list_display = ["id", "year", "make", "model", "listing_price", "listing_mileage"]
