@@ -50,20 +50,10 @@ class VehicleSearch(APIView, LimitOffsetPagination):
             make = request.data.get("make")
             model = request.data.get("model")
             mileage = request.data.get("mileage", None)
-            vehicles = (
-                Vehicle.objects.exclude(listing_price__exact="")
-                .exclude(listing_mileage__exact="")
-                .filter(year=year)
-                .filter(make=make)
-                .filter(model=model)
-            )
-            if mileage:
-                mileage = int(mileage)
-                vehicles = vehicles.filter(listing_mileage__gt=mileage * 0.9).filter(listing_mileage__lt=mileage * 1.1)
+            if len(mileage) == 0:
+                mileage = None
 
-            print(vehicles)
-
-            market_value = Vehicle.market_value(vehicles, mileage)
+            vehicles, market_value = Vehicle.market_value(year, make, model, mileage)
 
             serializer = VehicleReportSerializer({"results": vehicles, "market_value": market_value})
 

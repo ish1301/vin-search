@@ -42,11 +42,11 @@ class Vehicle(models.Model):
 
     @property
     def price(self):
-        return f"${int(self.listing_price):,}" if len(self.listing_price) > 0 else "-"
+        return f"${int(self.listing_price):,}" if self.listing_price > 0 else "-"
 
     @property
     def mileage(self):
-        return f"{int(self.listing_mileage):,}" if len(self.listing_mileage) > 0 else "-"
+        return f"{int(self.listing_mileage):,}" if self.listing_mileage > 0 else "-"
 
     class Meta:
         indexes = [
@@ -64,10 +64,7 @@ class Vehicle(models.Model):
     """
 
     @classmethod
-    def market_value(self, vehicles, mileage):
-        if len(vehicles) == 0:
-            return ""
-
+    def market_value(self, year, make, model, mileage):
         def round_by_100(price):
             return f"${round(int(price / 100) * 100):,}" if price > 0 else ""
 
@@ -89,11 +86,34 @@ class Vehicle(models.Model):
             depreciation_rate = total_price_change / total_mileage_change
             return depreciation_rate
 
+        vehicles = (
+            Vehicle.objects.exclude(listing_price=None)
+            .exclude(listing_mileage=None)
+            .filter(year=year)
+            .filter(make=make)
+            .filter(model=model)
+        )
+
+        # Filter out data which is too far from the dataset
+        if mileage:
+            # When comparing closet mileage, use 20% delta
+            mileage_delta = 0.2
+
+            mileage = int(mileage)
+            vehicles = (
+                vehicles.filter(listing_mileage__gte=mileage * (1 - mileage_delta))
+                .filter(listing_mileage__lte=mileage * (1 + mileage_delta))
+            )
+
+        # No matching vehicles
+        if len(vehicles) == 0:
+            return [], ""
+
         # Filter out data with missing price or mileage
         car_inventory = [
             (int(i.listing_mileage), int(i.listing_price))
             for i in vehicles
-            if len(i.listing_price) > 0 and len(i.listing_mileage) > 0
+            if i.listing_price > 0 and i.listing_mileage > 0
         ]
 
         # Sort the car inventory based on mileage asc order
@@ -104,18 +124,13 @@ class Vehicle(models.Model):
         median_mileage = statistics.median([i[0] for i in car_inventory])
 
         # If mileage is unknown return median
-        if mileage is None or len(mileage) == 0:
-            return round_by_100(median_price)
+        if mileage is None or mileage == 0:
+            return vehicles, round_by_100(median_price)
 
         depreciation = depreciation_rate(car_inventory)
-
-        print(f"Initial Mileage: {median_mileage}")
-        print(f"Initial Price: {median_price}")
-        print(f"Depreciation: {depreciation}")
-
         market_price = max(0, median_price + ((int(mileage) - median_mileage) * depreciation))
 
-        return round_by_100(market_price)
+        return vehicles, round_by_100(market_price)
 
 
 class VehicleAdmin(admin.ModelAdmin):
