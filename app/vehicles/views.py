@@ -55,8 +55,13 @@ class VehicleSearch(APIView, LimitOffsetPagination):
                 .exclude(listing_mileage__exact="")
                 .filter(year=year)
                 .filter(make=make)
-                .filter(model=model)[:100]
+                .filter(model=model)
             )
+            if mileage:
+                mileage = int(mileage)
+                vehicles = vehicles.filter(listing_mileage__gt=mileage * 0.9).filter(listing_mileage__lt=mileage * 1.1)
+
+            print(vehicles)
 
             market_value = Vehicle.market_value(vehicles, mileage)
 
