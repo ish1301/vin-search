@@ -65,6 +65,12 @@ class Vehicle(models.Model):
 
     @classmethod
     def market_value(self, year, make, model, mileage):
+        # When comparing closet mileage, use 20% delta
+        mileage_delta = 0.2
+
+        # Limit vehicles data in response
+        limit_vehicles = 100
+
         def round_by_100(price):
             return f"${round(int(price / 100) * 100):,}" if price > 0 else ""
 
@@ -96,9 +102,6 @@ class Vehicle(models.Model):
 
         # Filter out data which is too far from the dataset
         if mileage:
-            # When comparing closet mileage, use 20% delta
-            mileage_delta = 0.2
-
             mileage = int(mileage)
             vehicles = (
                 vehicles.filter(listing_mileage__gte=mileage * (1 - mileage_delta))
@@ -125,12 +128,12 @@ class Vehicle(models.Model):
 
         # If mileage is unknown return median
         if mileage is None or mileage == 0:
-            return vehicles, round_by_100(median_price)
+            return vehicles[:limit_vehicles], round_by_100(median_price)
 
         depreciation = depreciation_rate(car_inventory)
         market_price = max(0, median_price + ((int(mileage) - median_mileage) * depreciation))
 
-        return vehicles, round_by_100(market_price)
+        return vehicles[:limit_vehicles], round_by_100(market_price)
 
 
 class VehicleAdmin(admin.ModelAdmin):
