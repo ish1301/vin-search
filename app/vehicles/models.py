@@ -103,9 +103,8 @@ class Vehicle(models.Model):
         # Filter out data which is too far from the dataset
         if mileage:
             mileage = int(mileage)
-            vehicles = (
-                vehicles.filter(listing_mileage__gte=mileage * (1 - mileage_delta))
-                .filter(listing_mileage__lte=mileage * (1 + mileage_delta))
+            vehicles = vehicles.filter(listing_mileage__gte=mileage * (1 - mileage_delta)).filter(
+                listing_mileage__lte=mileage * (1 + mileage_delta)
             )
 
         # No matching vehicles
